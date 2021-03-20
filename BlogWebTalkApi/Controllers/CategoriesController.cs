@@ -49,8 +49,8 @@ namespace BlogWebTalkApi.Controllers
         [HttpGet("GetLastCategories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetLastCategories()
         {
-            return await _context.Categories.OrderByDescending(c => c.CategoryId).Take(4)
-                .Include(c => c.Articles.OrderByDescending(a => a.ArticleId).Take(3)).ToListAsync();
+            return await _context.Categories.OrderByDescending(c => c.CategoryId).Take(4).Include(c => c.Articles)
+                .ToListAsync();
 
         }
         // GET: api/Categories/5
