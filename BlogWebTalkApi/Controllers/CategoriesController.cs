@@ -32,14 +32,14 @@ namespace BlogWebTalkApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return await _context.Categories.Select(c => new Category()
+            return await _context.Categories.Include(a =>a.Articles).Select(c => new Category()
             {
                 CategoryId = c.CategoryId,
                 CategoryTitle = c.CategoryTitle,
                 CategoryPublishDate = c.CategoryPublishDate,
                 CategoryImageName = c.CategoryImageName,
-                CategoryImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, c.CategoryImageName)
-
+                CategoryImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, c.CategoryImageName),
+                Articles = c.Articles
             }).ToListAsync();
         }
         /// <summary>
