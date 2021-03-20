@@ -53,6 +53,13 @@ namespace BlogWebTalkApi.Controllers
                 .ToListAsync();
 
         }
+        [HttpGet("GetCategoriesArticles")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategoriesArticles()
+        {
+            return await _context.Categories.OrderBy(c => c.CategoryId).Include(c => c.Articles)
+                .ToListAsync();
+
+        }
         // GET: api/Categories/5
         /// <summary>
         /// get one category by id
