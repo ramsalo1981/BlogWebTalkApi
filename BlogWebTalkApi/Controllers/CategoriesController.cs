@@ -45,7 +45,16 @@ namespace BlogWebTalkApi.Controllers
                 ArticleIngress = c.ArticleIngress,
                 ArticlePublishDate = c.ArticlePublishDate,
                 ArticleImageName = c.ArticleImageName,
-                ArticleImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, c.ArticleImageName)
+                ArticleImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, c.ArticleImageName),
+                ArticleParagraphs = c.ArticleParagraphs.Select(a => new ArticleParagraph()
+                {
+                    ArticleParagraphId = a.ArticleParagraphId,
+                    ArticleParagraphTitle = a.ArticleParagraphTitle,
+                    Content = a.Content,
+                    Article = a.Article,
+                    ArticleParagraphImageName = a.ArticleParagraphImageName,
+                    ArticleParagraphImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleParagraphImageName)
+                }).ToList()
                 }).ToList()
             }).ToListAsync();
         }

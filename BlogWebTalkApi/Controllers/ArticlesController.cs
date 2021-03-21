@@ -43,7 +43,16 @@ namespace BlogWebTalkApi.Controllers
                 CategoryId = a.CategoryId,
                 Category = a.Category,
                 ArticleImageName = a.ArticleImageName,
-                ArticleImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleImageName)
+                ArticleImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleImageName),
+                ArticleParagraphs = a.ArticleParagraphs.Select(a => new ArticleParagraph()
+                {
+                    ArticleParagraphId= a.ArticleParagraphId,
+                    ArticleParagraphTitle = a.ArticleParagraphTitle,
+                    Content = a.Content,
+                    Article = a.Article,
+                    ArticleParagraphImageName = a.ArticleParagraphImageName,
+                    ArticleParagraphImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleParagraphImageName)
+                }).ToList()
 
             }).ToListAsync();
         }
