@@ -65,8 +65,32 @@ namespace BlogWebTalkApi.Controllers
         [HttpGet("GetLastCategories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetLastCategories()
         {
-            return await _context.Categories.OrderByDescending(c => c.CategoryId).Take(4).Include(c => c.Articles)
-                .ToListAsync();
+            return await _context.Categories.OrderByDescending(c => c.CategoryId).Take(4).Include(c => c.Articles).Select(c => new Category()
+            {
+                CategoryId = c.CategoryId,
+                CategoryTitle = c.CategoryTitle,
+                CategoryPublishDate = c.CategoryPublishDate,
+                CategoryImageName = c.CategoryImageName,
+                CategoryImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, c.CategoryImageName),
+                Articles = c.Articles.Select(c => new Article()
+                {
+                    ArticleId = c.ArticleId,
+                    ArticleTitle = c.ArticleTitle,
+                    ArticleIngress = c.ArticleIngress,
+                    ArticlePublishDate = c.ArticlePublishDate,
+                    ArticleImageName = c.ArticleImageName,
+                    ArticleImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, c.ArticleImageName),
+                    ArticleParagraphs = c.ArticleParagraphs.Select(a => new ArticleParagraph()
+                    {
+                        ArticleParagraphId = a.ArticleParagraphId,
+                        ArticleParagraphTitle = a.ArticleParagraphTitle,
+                        Content = a.Content,
+                        Article = a.Article,
+                        ArticleParagraphImageName = a.ArticleParagraphImageName,
+                        ArticleParagraphImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleParagraphImageName)
+                    }).ToList()
+                }).ToList()
+            }).ToListAsync();
 
         }
         [HttpGet("GetCategoriesArticles")]
