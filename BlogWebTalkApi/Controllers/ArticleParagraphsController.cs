@@ -127,7 +127,7 @@ namespace BlogWebTalkApi.Controllers
         /// <param name="articleParagraph"></param>
         /// <returns>articleParagraph</returns>
         [HttpPost]
-        public async Task<ActionResult<ArticleParagraph>> PostArticleParagraph(ArticleParagraph articleParagraph)
+        public async Task<ActionResult<ArticleParagraph>> PostArticleParagraph([FromForm] ArticleParagraph articleParagraph)
         {
             articleParagraph.ArticleParagraphImageName = await SaveImage(articleParagraph.ArticleParagraphImageFile);
             _context.ArticleParagraphs.Add(articleParagraph);
