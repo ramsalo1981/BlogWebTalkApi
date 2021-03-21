@@ -64,7 +64,29 @@ namespace BlogWebTalkApi.Controllers
         [HttpGet("GetLastArticles")]
         public async Task<ActionResult<IEnumerable<Article>>> GetLastArticles()
         {
-            return await _context.Articles.OrderByDescending(a => a.ArticleId).Take(3).Include(c => c.Category).ToListAsync();
+            return await _context.Articles.OrderByDescending(a => a.ArticleId).Take(3).Include(c => c.Category).Select(a => new Article()
+            {
+                ArticleId = a.ArticleId,
+                ArticleTitle = a.ArticleTitle,
+                ArticleIngress = a.ArticleIngress,
+                ArticlePublishDate = a.ArticlePublishDate,
+                CreatedBy = a.CreatedBy,
+                StickyArticle = a.StickyArticle,
+                CategoryId = a.CategoryId,
+                Category = a.Category,
+                ArticleImageName = a.ArticleImageName,
+                ArticleImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleImageName),
+                ArticleParagraphs = a.ArticleParagraphs.Select(a => new ArticleParagraph()
+                {
+                    ArticleParagraphId = a.ArticleParagraphId,
+                    ArticleParagraphTitle = a.ArticleParagraphTitle,
+                    Content = a.Content,
+                    Article = a.Article,
+                    ArticleParagraphImageName = a.ArticleParagraphImageName,
+                    ArticleParagraphImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleParagraphImageName)
+                }).ToList()
+
+            }).ToListAsync();
 
         }
 
