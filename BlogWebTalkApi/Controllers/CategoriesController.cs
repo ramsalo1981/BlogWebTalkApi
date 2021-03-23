@@ -93,13 +93,7 @@ namespace BlogWebTalkApi.Controllers
             }).ToListAsync();
 
         }
-        [HttpGet("GetCategoriesArticles")]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategoriesArticles()
-        {
-            return await _context.Categories.OrderBy(c => c.CategoryId).Include(c => c.Articles)
-                .ToListAsync();
-
-        }
+        
         // GET: api/Categories/5
         /// <summary>
         /// get one category by id
@@ -126,11 +120,15 @@ namespace BlogWebTalkApi.Controllers
 
             return category;
         }
-        [HttpGet("GetCategoryDetails/{id}")]
-        public async Task<ActionResult<Category>> GetCategoryDetails(int id)
+        [HttpGet("GetCategoryDetails")]
+        public async Task<ActionResult<Category>> GetCategoryDetails(int id, string title)
         {
-            var category = await _context.Categories.Include(a => a.Articles)
-                .Where(c => c.CategoryId == id).FirstOrDefaultAsync();
+            //var category = await _context.Categories.Where(c => c.CategoryTitle.Contains(cTitle)).Include(a => a.Articles.Where(a => a.ArticleTitle==aTitle))
+            //    .ThenInclude(p =>p.ArticleParagraphs.Where(p => p.ArticleParagraphTitle.Contains(pTitle)))
+            //    .FirstOrDefaultAsync();
+
+            var category = await _context.Categories.Include(c => c.Articles)
+                .Where(c => c.CategoryId == id || c.CategoryTitle == title).FirstOrDefaultAsync();
 
             if (category == null)
             {
@@ -209,10 +207,12 @@ namespace BlogWebTalkApi.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var category = await _context.Categories.FindAsync(id);
+            
             if (category == null)
             {
                 return NotFound();
             }
+            
             DeleteImage(category.CategoryImageName);
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();

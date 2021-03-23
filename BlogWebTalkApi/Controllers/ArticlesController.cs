@@ -89,8 +89,15 @@ namespace BlogWebTalkApi.Controllers
             }).ToListAsync();
 
         }
-
-        
+        [Route("SearchCategoryArticle/{search}")]
+        [HttpGet]
+        public async Task<IEnumerable<Article>> SearchCategoryArticle(string search)
+        {
+            return await _context.Articles.OrderByDescending(x => x.ArticleId)
+                .Include( x => x.Category).Where(x => x.ArticleTitle.ToLower().Contains(search.ToLower())
+                || x.Category.CategoryTitle.ToLower().Contains(search.ToLower()))
+                .ToListAsync();
+        }
         // GET: api/Articles/5
         /// <summary>
         /// get a article from database by id

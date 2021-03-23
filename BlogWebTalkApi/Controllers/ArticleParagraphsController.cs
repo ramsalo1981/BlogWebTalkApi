@@ -44,7 +44,7 @@ namespace BlogWebTalkApi.Controllers
                 ArticleParagraphImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, p.ArticleParagraphImageName)
             }).ToListAsync();
         }
-
+        
         // GET: api/ArticleParagraphs/5
         /// <summary>
         /// get articleparagraph by id

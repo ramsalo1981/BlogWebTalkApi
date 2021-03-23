@@ -70,6 +70,8 @@ namespace BlogWebTalkApi.Models
                 entity.Property(e => e.CategoryTitle).HasMaxLength(50);
             });
 
+           
+
             OnModelCreatingPartial(modelBuilder);
         }
 
