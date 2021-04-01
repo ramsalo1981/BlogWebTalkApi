@@ -94,7 +94,30 @@ namespace BlogWebTalkApi.Controllers
         public async Task<IEnumerable<Article>> SearchCategoryArticle(string search)
         {
             return await _context.Articles.OrderByDescending(x => x.ArticleId)
-                .Include( x => x.Category).Where(x => x.ArticleTitle.ToLower().Contains(search.ToLower())
+                .Include( x => x.Category).Select(a => new Article()
+                {
+                    ArticleId = a.ArticleId,
+                    ArticleTitle = a.ArticleTitle,
+                    ArticleIngress = a.ArticleIngress,
+                    ArticlePublishDate = a.ArticlePublishDate,
+                    CreatedBy = a.CreatedBy,
+                    StickyArticle = a.StickyArticle,
+                    CategoryId = a.CategoryId,
+                    Category = a.Category,
+                    ArticleImageName = a.ArticleImageName,
+                    ArticleImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleImageName),
+                    ArticleParagraphs = a.ArticleParagraphs.Select(a => new ArticleParagraph()
+                    {
+                        ArticleParagraphId = a.ArticleParagraphId,
+                        ArticleParagraphTitle = a.ArticleParagraphTitle,
+                        Content = a.Content,
+                        Article = a.Article,
+                        ArticleParagraphImageName = a.ArticleParagraphImageName,
+                        ArticleParagraphImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, a.ArticleParagraphImageName)
+
+                    }).ToList()
+                })
+                .Where(x => x.ArticleTitle.ToLower().Contains(search.ToLower())
                 || x.Category.CategoryTitle.ToLower().Contains(search.ToLower()))
                 .ToListAsync();
         }
@@ -253,7 +276,7 @@ namespace BlogWebTalkApi.Controllers
         /// <returns>image name</returns>
         public async Task<string> SaveImage(IFormFile imageFile)
         {
-            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(5).ToArray()).Replace(' ', '-');
             imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
             var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
